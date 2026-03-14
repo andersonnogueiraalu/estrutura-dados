@@ -1,0 +1,320 @@
+import java.util.EmptyStackException;
+
+/**
+
+- ╔══════════════════════════════════════════════════════════════════╗
+- Stack (Pilha) — Implementação Didática em Java
+- Estrutura de Dados | LIFO: Last In, First Out
+- 
+- Complexidade das Operações:
+- ┌─────────────┬────────────┬────────────┐
+- │  Operação   │  Melhor    │   Pior     │
+- ├─────────────┼────────────┼────────────┤
+- │  push()     │   O(1)     │   O(1)     │
+- │  pop()      │   O(1)     │   O(1)     │
+- │  peek()     │   O(1)     │   O(1)     │
+- │  isEmpty()  │   O(1)     │   O(1)     │
+- │  size()     │   O(1)     │   O(1)     │
+- │  search()   │   O(1)     │   O(n)     │
+- └─────────────┴────────────┴────────────┘
+- Espaço: O(n)
+- 
+- Série: Estruturas de Dados em Java — Ep.04
+- Autor: @andersonnogueiraalu
+- ╚══════════════════════════════════════════════════════════════════╝
+  */
+  public class StackExemplo {
+  
+  // ─────────────────────────────────────────
+  //  1. Node: nó interno da pilha encadeada
+  // ─────────────────────────────────────────
+  private static class Node<T> {
+  T data;
+  Node<T> next;
+  
+  ```
+   Node(T data) {
+       this.data = data;
+       this.next = null;
+   }
+  ```
+  
+  }
+  
+  // ─────────────────────────────────────────
+  //  2. Stack genérica usando LinkedList manual
+  // ─────────────────────────────────────────
+  static class Stack<T> {
+  
+  ```
+   private Node<T> top; // topo da pilha
+   private int size;
+  
+   public Stack() {
+       this.top = null;
+       this.size = 0;
+   }
+  
+   /**
+    * Empilha um elemento no topo.
+    * Complexidade: O(1) — inserção direta no topo.
+    */
+   public void push(T item) {
+       Node<T> newNode = new Node<>(item);
+       newNode.next = top;
+       top = newNode;
+       size++;
+   }
+  
+   /**
+    * Remove e retorna o elemento do topo.
+    * Complexidade: O(1) — remoção direta do topo.
+    *
+    * @throws EmptyStackException se a pilha estiver vazia
+    */
+   public T pop() {
+       if (isEmpty()) {
+           throw new EmptyStackException();
+       }
+       T data = top.data;
+       top = top.next;
+       size--;
+       return data;
+   }
+  
+   /**
+    * Consulta o topo SEM remover.
+    * Complexidade: O(1)
+    *
+    * @throws EmptyStackException se a pilha estiver vazia
+    */
+   public T peek() {
+       if (isEmpty()) {
+           throw new EmptyStackException();
+       }
+       return top.data;
+   }
+  
+   /**
+    * Busca um elemento na pilha.
+    * Complexidade: O(1) melhor caso (topo) | O(n) pior caso (base)
+    *
+    * @return posição a partir do topo (1-based), ou -1 se não encontrado
+    */
+   public int search(T item) {
+       Node<T> current = top;
+       int position = 1;
+       while (current != null) {
+           if (current.data.equals(item)) return position;
+           current = current.next;
+           position++;
+       }
+       return -1;
+   }
+  
+   /**
+    * Verifica se a pilha está vazia.
+    * Complexidade: O(1)
+    */
+   public boolean isEmpty() {
+       return size == 0;
+   }
+  
+   /**
+    * Retorna o tamanho atual da pilha.
+    * Complexidade: O(1)
+    */
+   public int size() {
+       return size;
+   }
+  
+   /**
+    * Representação visual da pilha no console.
+    */
+   @Override
+   public String toString() {
+       if (isEmpty()) return "Pilha: [ vazia ]";
+  
+       StringBuilder sb = new StringBuilder("Pilha (topo → base): [ ");
+       Node<T> current = top;
+       while (current != null) {
+           sb.append(current.data);
+           if (current.next != null) sb.append(" → ");
+           current = current.next;
+       }
+       sb.append(" ]");
+       return sb.toString();
+   }
+  ```
+  
+  }
+  
+  // ─────────────────────────────────────────
+  //  3. Caso de Uso Real #1:
+  //     Verificador de Parênteses Balanceados
+  //     (muito cobrado em entrevistas técnicas!)
+  // ─────────────────────────────────────────
+  static boolean isBalanced(String expression) {
+  Stack<Character> stack = new Stack<>();
+  
+  ```
+   for (char c : expression.toCharArray()) {
+       if (c == '(' || c == '{' || c == '[') {
+           stack.push(c);
+       } else if (c == ')' || c == '}' || c == ']') {
+           if (stack.isEmpty()) return false;
+  
+           char top = stack.pop();
+           if ((c == ')' && top != '(') ||
+               (c == '}' && top != '{') ||
+               (c == ']' && top != '[')) {
+               return false;
+           }
+       }
+   }
+   return stack.isEmpty();
+  ```
+  
+  }
+  
+  // ─────────────────────────────────────────
+  //  4. Caso de Uso Real #2:
+  //     Simulação de Undo/Redo (ex: editor de texto)
+  // ─────────────────────────────────────────
+  static void simularUndoRedo() {
+  System.out.println(”\n╔══ SIMULAÇÃO: Editor com Undo/Redo ══╗”);
+  
+  ```
+   Stack<String> undoStack = new Stack<>();
+   Stack<String> redoStack = new Stack<>();
+  
+   // Ações do usuário
+   String[] acoes = {"Digitou: 'Olá'", "Digitou: ' Mundo'", "Formatou: negrito", "Inseriu: imagem"};
+  
+   System.out.println("\n── Executando ações ──");
+   for (String acao : acoes) {
+       undoStack.push(acao);
+       System.out.println("  ✏️  " + acao);
+   }
+  
+   System.out.println("\n" + undoStack);
+  
+   System.out.println("\n── Undo (2x) ──");
+   for (int i = 0; i < 2; i++) {
+       String desfeita = undoStack.pop();
+       redoStack.push(desfeita);
+       System.out.println("  ↩️  Desfeito: " + desfeita);
+   }
+  
+   System.out.println("\n" + undoStack);
+  
+   System.out.println("\n── Redo (1x) ──");
+   String refeita = redoStack.pop();
+   undoStack.push(refeita);
+   System.out.println("  ↪️  Refeito: " + refeita);
+  
+   System.out.println("\n" + undoStack);
+   System.out.println("╚══ Fim da simulação ══╝");
+  ```
+  
+  }
+  
+  // ─────────────────────────────────────────
+  //  5. Caso de Uso Real #3:
+  //     Conversão de número decimal para binário
+  // ─────────────────────────────────────────
+  static String decimalParaBinario(int numero) {
+  if (numero == 0) return “0”;
+  
+  ```
+   Stack<Integer> stack = new Stack<>();
+   int n = numero;
+  
+   while (n > 0) {
+       stack.push(n % 2);
+       n /= 2;
+   }
+  
+   StringBuilder binario = new StringBuilder();
+   while (!stack.isEmpty()) {
+       binario.append(stack.pop());
+   }
+   return binario.toString();
+  ```
+  
+  }
+  
+  // ─────────────────────────────────────────
+  //  6. Main — demonstração completa
+  // ─────────────────────────────────────────
+  public static void main(String[] args) {
+  
+  ```
+   System.out.println("═══════════════════════════════════════");
+   System.out.println("   Stack (Pilha) — Estrutura LIFO       ");
+   System.out.println("═══════════════════════════════════════\n");
+  
+   Stack<Integer> pilha = new Stack<>();
+  
+   // push — O(1)
+   System.out.println("▶ Push: 10, 20, 30, 40");
+   pilha.push(10);
+   pilha.push(20);
+   pilha.push(30);
+   pilha.push(40);
+   System.out.println(pilha);
+  
+   // peek — O(1)
+   System.out.println("\n▶ Peek (sem remover): " + pilha.peek());
+  
+   // pop — O(1)
+   System.out.println("\n▶ Pop (removendo do topo):");
+   System.out.println("  Removido → " + pilha.pop());
+   System.out.println("  Removido → " + pilha.pop());
+   System.out.println(pilha);
+  
+   // search — O(1) melhor | O(n) pior
+   System.out.println("\n▶ Search do valor 10:");
+   System.out.println("  Posição a partir do topo → " + pilha.search(10));
+  
+   // Parênteses balanceados
+   System.out.println("\n╔══ CASO DE USO: Parênteses Balanceados ══╗");
+   String[] expressoes = {
+       "({[]})",
+       "((()))",
+       "({[}])",
+       "((())",
+       "{[()]}"
+   };
+   for (String expr : expressoes) {
+       System.out.printf("  %-12s → %s%n", expr, isBalanced(expr) ? "✅ Balanceado" : "❌ Inválido");
+   }
+   System.out.println("╚═════════════════════════════════════════╝");
+  
+   // Undo/Redo
+   simularUndoRedo();
+  
+   // Decimal para binário
+   System.out.println("\n╔══ CASO DE USO: Decimal → Binário ══╗");
+   int[] numeros = {2, 10, 42, 255};
+   for (int num : numeros) {
+       System.out.printf("  %3d → %s%n", num, decimalParaBinario(num));
+   }
+   System.out.println("╚════════════════════════════════════╝");
+  
+   // Exceção em pilha vazia
+   System.out.println("\n▶ Testando exceção em pilha vazia:");
+   Stack<String> pilhaVazia = new Stack<>();
+   try {
+       pilhaVazia.pop();
+   } catch (EmptyStackException e) {
+       System.out.println("  EmptyStackException capturada com sucesso!");
+   }
+  
+   System.out.println("\n═══════════════════════════════════════");
+   System.out.println("  Stack implementada com sucesso! 🚀   ");
+   System.out.println("═══════════════════════════════════════");
+  ```
+  
+  }
+  }
