@@ -1,3 +1,5 @@
+package com.exemplo.java.queue;
+
 import java.util.NoSuchElementException;
 
 /**
