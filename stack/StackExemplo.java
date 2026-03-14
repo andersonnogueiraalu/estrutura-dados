@@ -1,3 +1,6 @@
+package com.exemplo.java.stack;
+
+
 import java.util.EmptyStackException;
 
 /**
