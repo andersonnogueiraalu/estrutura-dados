@@ -1,4 +1,4 @@
-package com.exemplo.java.stack;
+package com.estrutura.dados.stack;
 
 
 import java.util.EmptyStackException;

@@ -1,4 +1,4 @@
-package com.exemplo.java.queue;
+package com.estrutura.dados.queue;
 
 import java.util.NoSuchElementException;
 
