@@ -31,7 +31,7 @@ import java.util.Queue;
  *  Autor: @seulinkedin
  * ╚══════════════════════════════════════════════════════════════════╝
  */
-public class BinaryTreeExemplo {
+public class BinaryTreeExample {
 
     // ─────────────────────────────────────────
     //  1. Node: nó da árvore binária
